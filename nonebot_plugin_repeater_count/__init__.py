@@ -100,7 +100,8 @@ async def handle_repeater(event: GroupMessageEvent):
             message=message
         )
 victim_rank = on_command("被复读排行", aliases={"受害者排行"}, priority=5, block=True)
-
+rep_rank = on_command("复读排行", aliases={"复读统计"}, priority=5, block=True)      # 新增
+word_rank = on_command("复读词排行", priority=5, block=True)                        # 新增
 
 @victim_rank.handle()
 async def handle_victim_rank(event: GroupMessageEvent, arg: Message = CommandArg()):
