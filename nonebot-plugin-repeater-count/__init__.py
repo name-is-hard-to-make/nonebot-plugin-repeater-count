@@ -37,7 +37,6 @@ class Recorder:
         if self.data_path.exists():
             with open(self.data_path, 'r', encoding='utf-8') as f:
                 loaded_data = json.load(f)
-                # 兼容旧数据结构，确保新增的victims字段存在
                 for group in loaded_data.values():
                     for period in group.values():
                         period.setdefault("victims", {})
@@ -64,7 +63,6 @@ class Recorder:
         last_msg, last_user = self.last_message.get(group_id, ("", 0))
 
         if message == last_msg and user_id != last_user:
-            # 原始发送者ID
             victim_id_str = str(last_user)
 
             for period in periods.values():
@@ -78,12 +76,8 @@ class Recorder:
                         "words": {},
                         "victims": {}
                     }
-
-                # 更新复读用户统计
                 group_data[period]["users"][user_id_str] = group_data[period]["users"].get(user_id_str, 0) + 1
-                # 更新被复读用户统计
                 group_data[period]["victims"][victim_id_str] = group_data[period]["victims"].get(victim_id_str, 0) + 1
-                # 更新词汇统计
                 group_data[period]["words"][message] = group_data[period]["words"].get(message, 0) + 1
 
             self.last_message[group_id] = (message, user_id)
@@ -93,8 +87,6 @@ class Recorder:
 
 
 recorder = Recorder()
-
-# 消息处理器（保持不变）
 repeater_matcher = on_message(priority=10, block=False)
 
 
@@ -107,9 +99,6 @@ async def handle_repeater(event: GroupMessageEvent):
             user_id=event.user_id,
             message=message
         )
-
-
-# 新增被复读排行命令
 victim_rank = on_command("被复读排行", aliases={"受害者排行"}, priority=5, block=True)
 
 
@@ -118,7 +107,6 @@ async def handle_victim_rank(event: GroupMessageEvent, arg: Message = CommandArg
     await get_rank_data(victim_rank, event, arg, "victims")
 
 
-# 修改后的通用排名处理逻辑
 async def get_rank_data(matcher: Matcher, event: GroupMessageEvent,
                         arg: Message, rank_type: str):
     """rank_type: users/words/victims"""
@@ -140,10 +128,8 @@ async def get_rank_data(matcher: Matcher, event: GroupMessageEvent,
     if not items:
         await matcher.finish("该时段暂无相关数据")
 
-    # 排序并取前10
     sorted_items = sorted(items.items(), key=lambda x: -x[1])[:10]
 
-    # 生成对应的排行榜描述
     descriptions = {
         "users": "复读机",
         "words": "复读词",
@@ -155,7 +141,6 @@ async def get_rank_data(matcher: Matcher, event: GroupMessageEvent,
     )
 
 
-# 修改原有命令处理函数
 @rep_rank.handle()
 async def handle_rep_rank(event: GroupMessageEvent, arg: Message = CommandArg()):
     await get_rank_data(rep_rank, event, arg, "users")
