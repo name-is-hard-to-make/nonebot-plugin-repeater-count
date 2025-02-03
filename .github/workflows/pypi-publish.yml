@@ -2,7 +2,9 @@ name: Publish
 
 on:
   push:
-  workflow_dispatch:  # 允许手动触发
+    tags:
+      - '*'
+  workflow_dispatch:
 
 jobs:
   pypi-publish:
