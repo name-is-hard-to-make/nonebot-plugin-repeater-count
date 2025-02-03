@@ -1,15 +1,4 @@
 from nonebot.plugin import PluginMetadata
-
-__plugin_meta__ = PluginMetadata(
-    name="复读统计",
-    description="群聊复读行为统计，支持复读排行/被复读排行/热词统计",
-    usage="发送 '复读排行'/'被复读排行'/'复读词排行' + [时段类型] 查看统计",
-    type="application",
-    homepage="https://github.com/name-is-hard-to-make/nonebot-plugin-repeater-count",
-    config=Config,
-    supported_adapters={"~onebot.v11"},
-)
-
 import json
 import os
 from datetime import datetime
@@ -20,6 +9,16 @@ from nonebot import get_driver, on_command, on_message
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
+
+__plugin_meta__ = PluginMetadata(
+    name="复读统计",
+    description="群聊复读行为统计，支持复读排行/被复读排行/热词统计",
+    usage="发送 '复读排行'/'被复读排行'/'复读词排行' + [时段类型] 查看统计",
+    type="application",
+    homepage="https://github.com/name-is-hard-to-make/nonebot-plugin-repeater-count",
+    config=Config,
+    supported_adapters={"~onebot.v11"},
+)
 
 # 数据结构类型定义
 RepData = Dict[str, Dict[str, Dict[str, Dict[str, int]]]]
