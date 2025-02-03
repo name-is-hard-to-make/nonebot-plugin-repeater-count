@@ -6,6 +6,7 @@ __plugin_meta__ = PluginMetadata(
     usage="发送 '复读排行'/'被复读排行'/'复读词排行' + [时段类型] 查看统计",
     type="application",
     homepage="https://github.com/name-is-hard-to-make/nonebot-plugin-repeater-count",
+    config=Config,
     supported_adapters={"~onebot.v11"},
 )
 
