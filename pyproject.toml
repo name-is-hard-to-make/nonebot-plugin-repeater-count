@@ -14,7 +14,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 nonebot2 = "^2.0.0"
-nonebot-adapter-onebot-v11 = "^2.2.0"
+nonebot-adapter-onebot = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
 python-dotenv = "^1.0.0"
