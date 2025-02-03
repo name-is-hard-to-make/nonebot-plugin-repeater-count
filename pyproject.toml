@@ -1,5 +1,5 @@
 [project]
-name = "nonebot-plugin-repeatercount"
+name = "nonebot-plugin-repeater-count"
 version = "0.1.0"
 description = "NoneBot 复读行为统计插件"
 authors = [
