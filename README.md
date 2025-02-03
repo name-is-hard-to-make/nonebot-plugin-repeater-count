@@ -1,4 +1,4 @@
-# nonebot-plugin-repeaterstat
+# nonebot-plugin-repeater-count
 
 ✨ 群聊复读行为统计插件 ✨
 
@@ -37,11 +37,11 @@
 
 使用 nb-cli 安装：
 ```bash
-nb plugin install nonebot-plugin-repeaterstat
+nb plugin install nonebot-plugin-repeater-count
 ```
 或使用 pip 安装：
 ```bash
-pip install nonebot-plugin-repeaterstat
+pip install nonebot-plugin-repeater-count
 ```
 ## 使用示例
 ### 基础使用
