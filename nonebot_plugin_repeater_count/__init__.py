@@ -9,6 +9,8 @@ import textwrap
 import asyncio
 
 from nonebot import get_driver, on_command, on_message, get_bot
+from nonebot import require
+require("nonebot_plugin_localstore")
 from nonebot.adapters.onebot.v11 import GroupMessageEvent, Message, MessageSegment
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
