@@ -124,40 +124,74 @@ rep_rank = on_command("复读排行", aliases={"复读统计"}, priority=5, bloc
 word_rank = on_command("复读词排行", priority=5, block=True)
 
 async def generate_bar_chart(title: str, data: List[Tuple[str, int]]) -> Optional[Path]:
-    """生成排行榜条形图"""
     try:
-        img_width = 800
-        img_height = 600
+        img_width = 1000
+        img_height = 800
         img = Image.new('RGB', (img_width, img_height), (255, 255, 255))
         draw = ImageDraw.Draw(img)
         
-        # 加载字体
         try:
-            font = ImageFont.truetype(FONT_PATH, 24)
+            title_font = ImageFont.truetype(FONT_PATH, 28)
+            text_font = ImageFont.truetype(FONT_PATH, 24)
+            small_font = ImageFont.truetype(FONT_PATH, 20)
         except IOError:
             font = ImageFont.load_default()
+            title_font = text_font = small_font = font
 
-        # 绘制标题
-        draw.text((img_width//2, 20), title, fill=(0, 0, 0), font=font, anchor='mt')
+        title_lines = textwrap.wrap(title, width=20)
+        title_height = len(title_lines) * 30
+        for i, line in enumerate(title_lines):
+            draw.text((img_width//2, 40 + i*30), 
+                     line, fill=(0, 0, 0), 
+                     font=title_font, anchor='mt')
 
-        # 计算布局参数
         max_count = max((count for _, count in data), default=1)
         bar_height = 40
-        spacing = 20
-        start_y = 80
+        spacing = 25
+        start_y = 60 + title_height
 
         for index, (name, count) in enumerate(data[:10]):
             y = start_y + index * (bar_height + spacing)
             
-            # 绘制条形
-            bar_width = int((count / max_count) * (img_width - 200))
-            draw.rectangle([60, y, 60 + bar_width, y + bar_height], fill=(79, 129, 189))
+            max_name_width = 250  
+            name_lines = []
+            current_line = []
+            current_width = 0
             
-            # 绘制名称和数值
-            draw.text((50, y + bar_height//2), f"{index+1}. {name}", fill=(0, 0, 0), font=font, anchor='rm')
-            draw.text((70 + bar_width, y + bar_height//2), str(count), fill=(0, 0, 0), font=font, anchor='lm')
+            for char in f"{index+1}. {name}":
+                char_width = text_font.getlength(char)
+                if current_width + char_width > max_name_width and current_line:
+                    name_lines.append("".join(current_line))
+                    current_line = []
+                    current_width = 0
+                current_line.append(char)
+                current_width += char_width
+            if current_line:
+                name_lines.append("".join(current_line))
 
-        # 保存临时文件
+            name_font = text_font if len(name_lines) < 2 else small_font
+            for line_num, line in enumerate(name_lines):
+                line_y = y + (bar_height - len(name_lines)*name_font.size) // 2 + line_num*name_font.size
+                draw.text((50, line_y), 
+                         line, 
+                         fill=(0, 0, 0), 
+                         font=name_font, 
+                         anchor='lm')
+
+            bar_max_width = img_width - 350  
+            bar_width = int((count / max_count) * bar_max_width)
+            bar_x_start = 300
+            draw.rectangle([bar_x_start, y, bar_x_start + bar_width, y + bar_height], 
+                          fill=(79, 129, 189))
+            
+            count_text = f"{count}"
+            text_width = text_font.getlength(count_text)
+            draw.text((bar_x_start + bar_width + 20, y + bar_height//2),
+                     count_text,
+                     fill=(0, 0, 0),
+                     font=text_font,
+                     anchor='lm')
+
         temp_dir = get_data_dir("repeater_count") / "temp"
         temp_dir.mkdir(parents=True, exist_ok=True)
         file_path = temp_dir / f"{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
