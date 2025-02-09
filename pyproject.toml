@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot-plugin-repeater-count"
-version = "0.2.0"  # 主版本更新
+version = "0.2.1"  # 主版本更新
 description = "NoneBot 复读行为统计插件"
 authors = ["NIHTM 3605587449@qq.com"]
 readme = "README.md"
